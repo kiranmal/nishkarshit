@@ -1,0 +1,438 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0b1220;
+  --brand-cyan: #17b6e8;
+  --brand-navy: #0c2340;
+  --brand-navy-deep: #081627;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-navy-deep: var(--brand-navy-deep);
+  --font-inter:
+    "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --font-poppins:
+    "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-poppins);
+  font-weight: 700;
+}
+
+.placeholder-img {
+  background: repeating-linear-gradient(
+    45deg,
+    #10243f,
+    #10243f 10px,
+    #0c1d33 10px,
+    #0c1d33 20px
+  );
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background: #fff;
+}
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--brand-cyan);
+}
+
+.marquee-track {
+  animation: marquee 22s linear infinite;
+}
+
+/* =========================================================
+   FOOTER PARTICLES
+   Dots rise upward from the arch
+========================================================= */
+
+.footer-particle {
+  opacity: 0;
+
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, 0.95),
+    0 0 10px rgba(54, 158, 255, 0.8);
+
+  animation-name: footerParticleRise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+
+  will-change: transform, opacity;
+}
+/* ========================================
+   Differentiator Thread Animation
+======================================== */
+
+.differentiator-thread {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  stroke-dasharray: 35 700;
+  stroke-dashoffset: 700;
+
+  opacity: 0;
+
+  filter: url(#threadGlow);
+
+  animation: differentiatorThreadMove 9s ease-in-out infinite;
+}
+
+/* Different colors for each thread */
+
+.differentiator-thread-1 {
+  stroke: #46a5ca;
+  animation-delay: 0s;
+}
+
+.differentiator-thread-2 {
+  stroke: #8b5cf6;
+  animation-delay: 1.2s;
+}
+
+.differentiator-thread-3 {
+  stroke: #00d4ff;
+  animation-delay: 2.4s;
+}
+
+.differentiator-thread-4 {
+  stroke: #ff7a18;
+  animation-delay: 3.6s;
+}
+
+.differentiator-thread-5 {
+  stroke: #00e5a8;
+  animation-delay: 0.8s;
+}
+
+.differentiator-thread-6 {
+  stroke: #ff4ecd;
+  animation-delay: 2s;
+}
+
+.differentiator-thread-7 {
+  stroke: #ffd166;
+  animation-delay: 3.2s;
+}
+
+.differentiator-thread-8 {
+  stroke: #38bdf8;
+  animation-delay: 4.4s;
+}
+
+.differentiator-thread-9 {
+  stroke: #a78bfa;
+  animation-delay: 1.6s;
+}
+
+.differentiator-thread-10 {
+  stroke: #22c55e;
+  animation-delay: 2.8s;
+}
+
+/* Slow flowing animation */
+
+@keyframes differentiatorThreadMove {
+  0% {
+    stroke-dashoffset: 700;
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+
+  75% {
+    opacity: 0.65;
+  }
+
+  100% {
+    stroke-dashoffset: -700;
+    opacity: 0;
+  }
+}
+
+@keyframes footerParticleRise {
+  0% {
+    transform: translateY(35px) scale(0.35);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.9;
+  }
+
+  30% {
+    transform: translateY(0) scale(1);
+    opacity: 0.95;
+  }
+
+  55% {
+    transform: translateY(-65px) scale(0.9);
+    opacity: 0.75;
+  }
+
+  75% {
+    transform: translateY(-130px) scale(0.7);
+    opacity: 0.45;
+  }
+
+  100% {
+    transform: translateY(-210px) scale(0.25);
+    opacity: 0;
+  }
+}
+
+@keyframes footerParticleRise {
+  0% {
+    transform: translate3d(0, 70px, 0) scale(0.35);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.85;
+  }
+
+  35% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+
+  65% {
+    transform: translate3d(0, -110px, 0) scale(0.8);
+    opacity: 0.65;
+  }
+
+  85% {
+    transform: translate3d(0, -180px, 0) scale(0.55);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translate3d(0, -240px, 0) scale(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-x {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+@keyframes bg-pan {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-18px) translateX(10px);
+  }
+}
+
+@keyframes logo-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes festival-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes logo-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes preloader-fade-out {
+  0%,
+  70% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-black-100: #000319;
+  --color-black-200: rgba(17, 25, 40, 0.75);
+  --color-black-300: rgba(255, 255, 255, 0.125);
+  --color-white-100: #bec1dd;
+  --color-white-200: #c1c2d3;
+  --color-blue-100: #e4ecff;
+  --color-purple: #cbacf9;
+
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-first: moveVertical 30s ease infinite;
+  --animate-second: moveInCircle 20s reverse infinite;
+  --animate-third: moveInCircle 40s linear infinite;
+  --animate-fourth: moveHorizontal 40s ease infinite;
+  --animate-fifth: moveInCircle 20s ease infinite;
+  --animate-scroll: scroll var(--animation-duration, 40s)
+    var(--animation-direction, forwards) linear infinite;
+
+  @keyframes spotlight {
+    0% {
+      opacity: 0;
+      transform: translate(-72%, -62%) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -40%) scale(1);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+  @keyframes moveHorizontal {
+    0% {
+      transform: translateX(-50%) translateY(-10%);
+    }
+    50% {
+      transform: translateX(50%) translateY(10%);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-10%);
+    }
+  }
+  @keyframes moveInCircle {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes moveVertical {
+    0% {
+      transform: translateY(-50%);
+    }
+    50% {
+      transform: translateY(50%);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
+  }
+}
+
+@utility heading {
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  text-align: center;
+  @media (min-width: 768px) {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+@keyframes flame {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scaleY(1.4);
+    opacity: 1;
+  }
+}
+.animate-flame {
+  animation: flame 0.4s ease-in-out infinite;
+}
+
+/* admin form label */
+.lbl {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.375rem;
+}
