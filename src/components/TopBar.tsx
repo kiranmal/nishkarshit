@@ -25,7 +25,7 @@ export default function TopBar() {
   const loop = [...tickerItems, ...tickerItems];
 
   return (
-    <div className="w-full bg-brand-cyan text-white text-[13px] font-medium h-10 sticky top-0 z-50">
+    <div className="w-full bg-[#00AEEF] text-white text-[15px] font-medium h-13 sticky top-0 z-50">
       <div className="max-w-[1440px] mx-auto flex items-center gap-6 px-4 py-2 h-full">
         {/* Scrolling ticker */}
         <div className="relative flex-1 min-w-0 overflow-hidden">
@@ -33,14 +33,13 @@ export default function TopBar() {
             {loop.map((item, i) => (
               <span key={i} className="tracking-wide">
                 {item}
-                <span className="mx-4 opacity-60">•</span>
               </span>
             ))}
           </div>
         </div>
 
         <div className="hidden lg:flex items-center gap-5 shrink-0">
-          <button className="border border-white/70 rounded px-3 py-1 text-xs font-semibold hover:bg-white hover:text-brand-cyan transition-colors">
+          <button className="border border-white/70 rounded px-1 py-3 text-[45] font-semibold hover:bg-white hover:text-brand-cyan transition-colors">
             <a href="/#enquiry">Business Enquiry</a>
           </button>
           <a
@@ -65,7 +64,7 @@ export default function TopBar() {
               className="transition-opacity hover:opacity-70"
             >
               <FacebookIcon
-                size={15}
+                size={18}
                 className="hover:opacity-80 cursor-pointer"
               />
             </a>
@@ -76,7 +75,7 @@ export default function TopBar() {
               className="transition-opacity hover:opacity-70"
             >
               <LinkedinIcon
-                size={15}
+                size={18}
                 className="hover:opacity-80 cursor-pointer"
               />
             </a>
@@ -87,7 +86,7 @@ export default function TopBar() {
               className="transition-opacity hover:opacity-70"
             >
               <InstagramIcon
-                size={15}
+                size={18}
                 className="hover:opacity-80 cursor-pointer"
               />
             </a>

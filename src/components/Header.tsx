@@ -24,11 +24,20 @@ export default function Header() {
     .map((i) => {
       const auto =
         i.autoChildren === "expertise"
-          ? expertiseLinks ?? expertiseItems.map((e) => ({ label: e.title, href: `/expertise/${e.slug}` }))
+          ? (expertiseLinks ??
+            expertiseItems.map((e) => ({
+              label: e.title,
+              href: `/expertise/${e.slug}`,
+            })))
           : i.autoChildren === "downloads"
-            ? downloadDocuments.map((d) => ({ label: d.title, href: "/download" }))
+            ? downloadDocuments.map((d) => ({
+                label: d.title,
+                href: "/download",
+              }))
             : [];
-      const manual = i.children.filter((c) => c.visible).map((c) => ({ label: c.label, href: c.href }));
+      const manual = i.children
+        .filter((c) => c.visible)
+        .map((c) => ({ label: c.label, href: c.href }));
       const children = [...auto, ...manual];
       return {
         label: i.label,
@@ -43,15 +52,15 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   return (
-    <header className="w-full bg-white sticky top-10 z-40 shadow-sm">
-      <div className="max-w-[1440px] mx-auto flex items-center justify-between px-4 py-3">
+    <header className="w-full bg-white sticky top-13 z-40 shadow-sm">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between px-1 py-1">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 shrink-0">
+        <Link href="/" className="flex items-center pl-32 gap-5 shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={header.logo}
             alt={header.logoAlt}
-            className="w-16 h-16 object-contain"
+            className="w-25 h-25 object-contain"
             style={{ animation: "logo-fade-in 0.6s ease-out" }}
           />
         </Link>

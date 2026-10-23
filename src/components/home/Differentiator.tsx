@@ -21,7 +21,7 @@ export default function Differentiator({
   description?: string;
 } = {}) {
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden bg-brand-navy text-white">
+    <section className="relative py-24 md:py-32 overflow-hidden bg-[#062E48] text-white">
       {/* =========================
           THREAD BACKGROUND
       ========================== */}
