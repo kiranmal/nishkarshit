@@ -1,6 +1,6 @@
 "use server";
 
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type EnquiryDoc } from "@/lib/models";
 import { rateLimit, clientMeta } from "@/lib/rate-limit";
 
@@ -29,7 +29,7 @@ export async function submitEnquiryAction(
   if (phone && !/^\+?\d{10,14}$/.test(phone.replace(/[\s\-()]/g, ""))) return { error: "Please enter a valid phone number." };
 
   if (!isDbConfigured()) {
-    console.error("[enquiry] MONGODB_URI not set — enquiry NOT saved");
+    console.error("[enquiry] DATABASE_URL not set — enquiry NOT saved");
     return { error: "This form is temporarily unavailable. Please contact us by phone or WhatsApp." };
   }
   const meta = await clientMeta();

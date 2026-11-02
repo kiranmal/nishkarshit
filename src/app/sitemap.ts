@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type SeoMetaDoc } from "@/lib/models";
 import { SEO_PAGES } from "@/lib/seo-pages";
 import { getSettings } from "@/lib/cms/content";
 import { getExpertiseList } from "@/lib/cms/expertise";
+import { getEducationTabs, getPublishedBlogs, getPublishedHardware } from "@/lib/cms/store";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     paths.add(p.slug);
   }
   expertiseSlugs.forEach((p) => paths.add(p));
+  // CMS-driven URLs: published blogs, hardware products and education tabs (drafts / deleted items drop out automatically).
+  (await getPublishedBlogs()).forEach((b) => paths.add(`/blogs/${b.slug}`));
+  (await getPublishedHardware()).forEach((h) => paths.add(`/banking/csp-hardware/${h.slug}`));
+  (await getEducationTabs()).forEach((t) => paths.add(`/education/${t.slug}`));
 
   const now = new Date();
   return [...paths]

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import { requirePermission } from "@/lib/auth";
-import { isDbConfigured } from "@/lib/mongodb";
+import { isDbConfigured } from "@/lib/db";
 import { LEAD_STATUSES } from "@/lib/models";
 import { FORM_SOURCES, STATUS_COLOR, STATUS_LABEL, listLeads } from "@/lib/forms/registry";
 
@@ -39,7 +39,7 @@ export default async function FormsPage({ searchParams }: { searchParams: Promis
       </div>
       <p className="text-gray-500 mb-5 text-sm">Every submission from every form on the website — who enquired, through which form, and what they sent.</p>
 
-      {!isDbConfigured() && <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">MongoDB isn&apos;t connected — submissions can&apos;t be stored or listed.</div>}
+      {!isDbConfigured() && <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">The database isn&apos;t connected — submissions can&apos;t be stored or listed.</div>}
       {error && <div className="mb-5 rounded-lg border border-red-200 bg-red-50 text-red-700 text-sm px-4 py-3">Could not load submissions. Check the database connection.</div>}
 
       <form className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-5">

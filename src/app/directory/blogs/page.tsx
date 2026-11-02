@@ -1,6 +1,6 @@
 import DirectoryHeader from "@/components/directory/DirectoryHeader";
 import DirectoryFooter from "@/components/directory/DirectoryFooter";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryBlogDoc } from "@/lib/models";
 import { fallbackBlogs } from "@/data/directoryFallback";
 

@@ -1,4 +1,4 @@
-import type { ObjectId } from "mongodb";
+import type { ObjectId } from "@/lib/db";
 
 /** A "Why Choose Us" highlight card on a business page. */
 export interface WhyChooseUsItem {
@@ -363,7 +363,116 @@ export interface HomepageSectionConfigDoc {
   image?: string;
   buttonLabel?: string;
   buttonHref?: string;
+  /** Structured, section-specific content (cards, slides, testimonials…) — shape defined in lib/cms/home.ts. */
+  data?: Record<string, unknown>;
   updatedAt: Date;
+}
+
+/* ------------------------------------------------------------------ */
+/* Generic CMS page engine (education tabs, banking pages, footer pages) */
+/* ------------------------------------------------------------------ */
+
+export type CmsPageKind = "education-tab" | "banking" | "footer-page";
+
+/** One block of a page. `sectionType` + `variant` pick a renderer; everything else is plain content. */
+export interface CmsSectionDoc {
+  sectionKey: string; // stable id inside the page
+  sectionType: string; // text | richText | cards | list | image | gallery | slider | events | stats | cta | banner | hero | applicationForm | …
+  variant: string;
+  width: "full" | "half";
+  visible: boolean;
+  order: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  html: string;
+  note: string;
+  image: string;
+  imageAlt: string;
+  items: Record<string, unknown>[];
+  bullets: { text: string }[];
+  buttons: { label: string; href: string; action: "link" | "openForm"; newTab: boolean }[];
+}
+
+/** A page of the generic engine: one document per page (education tab, CSP page, Privacy Policy …). */
+export interface CmsPageDoc {
+  _id?: ObjectId;
+  pageKey: string; // unique, e.g. "education:overview", "bank-csp", "privacy-policy"
+  kind: CmsPageKind;
+  slug: string; // tab id / URL segment
+  label: string; // tab label / admin label
+  title: string; // <h1> / main heading
+  path: string; // public URL
+  status: "draft" | "published";
+  order: number;
+  spacing?: "14" | "16"; // vertical rhythm between sections of an education tab
+  hero?: {
+    enabled: boolean;
+    badge: string;
+    title: string;
+    description: string; // paragraphs separated by a blank line
+    image: string;
+    buttons: { label: string; href: string; action: "link" | "openForm"; newTab: boolean }[];
+  };
+  heroImage?: string; // footer-pages banner image
+  sections: CmsSectionDoc[];
+  seo?: import("@/lib/cms/seo-fields").EntitySeo;
+  source: "default" | "custom";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** A post on the public /blogs page (NOT the directory blog). */
+export interface BlogPostDoc {
+  _id?: ObjectId;
+  title: string;
+  slug: string;
+  author: string;
+  tagline: string;
+  bannerImage: string;
+  content: string; // sanitized HTML
+  tags: string[];
+  featured: boolean;
+  status: "draft" | "published";
+  publishedAt: Date;
+  previousSlugs?: string[];
+  seo?: import("@/lib/cms/seo-fields").EntitySeo;
+  source: "default" | "custom";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface HardwareFormField {
+  name: string;
+  label: string;
+  type: "text" | "email" | "tel" | "number" | "textarea";
+  required: boolean;
+}
+
+/** A product under /banking/csp-hardware/[slug]. */
+export interface HardwareProductDoc {
+  _id?: ObjectId;
+  slug: string;
+  name: string;
+  description: string;
+  image: string;
+  images: string[]; // extra gallery images
+  unitPrice: string;
+  formFields: HardwareFormField[];
+  terms: string;
+  status: "draft" | "published";
+  order: number;
+  previousSlugs?: string[];
+  seo?: import("@/lib/cms/seo-fields").EntitySeo;
+  source: "default" | "custom";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** Bookkeeping: remembers which default datasets were imported so deleted defaults never come back. */
+export interface CmsMetaDoc {
+  _id: string; // e.g. "seeded:education"
+  at: Date;
 }
 
 /** Site-wide festive/seasonal theme, toggled from /admin/theme. */
@@ -433,4 +542,8 @@ export const COLLECTIONS = {
   siteContent: "site_content",
   media: "media",
   managementTeam: "management_team",
+  cmsPages: "cms_pages",
+  blogPosts: "blog_posts",
+  hardwareProducts: "hardware_products",
+  cmsMeta: "cms_meta",
 } as const;

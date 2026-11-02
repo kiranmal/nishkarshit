@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import { getCurrentAdmin, can } from "@/lib/auth";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS } from "@/lib/models";
 import { STATUS_COLOR, STATUS_LABEL, countByStatus, listLeads } from "@/lib/forms/registry";
 import { isCloudinaryConfigured } from "@/lib/cloudinary";
@@ -15,7 +15,7 @@ async function load(canForms: boolean) {
     const n = (c: string, f = {}) => db.collection(c).countDocuments(f);
     const [expertise, team, jobs, blogs, festivals, media, seo, subs, recent] = await Promise.all([
       n(COLLECTIONS.expertiseItems, { status: "published" }), n(COLLECTIONS.managementTeam, { active: true }),
-      n(COLLECTIONS.jobPostings, { status: "published" }), n(COLLECTIONS.directoryBlogs, { status: "published" }),
+      n(COLLECTIONS.jobPostings, { status: "published" }), n(COLLECTIONS.blogPosts, { status: "published" }),
       n(COLLECTIONS.festivals, { active: true }), n(COLLECTIONS.media), n(COLLECTIONS.seoMeta),
       canForms ? countByStatus() : Promise.resolve({ total: 0, fresh: 0 }),
       canForms ? listLeads({}, 1, 8) : Promise.resolve({ leads: [], total: 0 }),
@@ -50,7 +50,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       <p className="text-gray-500 mb-6">Role: <b>{admin?.role.replace("_", " ")}</b>. Changes you save here appear on the live website.</p>
 
       {sp.denied && <div className="mb-6 rounded-lg border border-red-200 bg-red-50 text-red-700 text-sm px-4 py-3">Your role doesn&apos;t have access to that page.</div>}
-      {!d && <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">MongoDB isn&apos;t connected (or is unreachable) — set <code>MONGODB_URI</code> to see live data and save changes.</div>}
+      {!d && <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">The database isn&apos;t connected (or is unreachable) — set <code>DATABASE_URL</code> to see live data and save changes.</div>}
       {!isCloudinaryConfigured() && <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">Cloudinary isn&apos;t configured — image uploads work locally only. Set the <code>CLOUDINARY_*</code> variables before deploying.</div>}
 
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import DirectoryHeader from "@/components/directory/DirectoryHeader";
 import DirectoryFooter from "@/components/directory/DirectoryFooter";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryListing, type DirectoryCategoryDoc } from "@/lib/models";
 import { fallbackCategories, fallbackListings } from "@/data/directoryFallback";
 

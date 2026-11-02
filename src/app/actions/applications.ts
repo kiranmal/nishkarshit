@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { getConfig, type FormValues } from "@/lib/applications/config";
 import { cleanSection, validateAll } from "@/lib/applications/validate";
 import { ensureApplicationIndexes, nextApplicationNumber } from "@/lib/applications/server";
@@ -41,7 +41,7 @@ export async function submitApplicationAction(
   // Unlike the simple contact forms, an application hands the user a reference
   // number, so we must never claim success when nothing was actually stored.
   if (!isDbConfigured()) {
-    console.error(`[${cfg.collection}] MONGODB_URI not set — application NOT saved.`);
+    console.error(`[${cfg.collection}] DATABASE_URL not set — application NOT saved.`);
     return {
       success: false,
       error: "Applications are temporarily unavailable. Please try again later or contact us on WhatsApp.",

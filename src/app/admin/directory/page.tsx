@@ -1,6 +1,6 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryListing } from "@/lib/models";
 import { createListingAction } from "@/app/admin/directory/actions";
 
@@ -38,7 +38,7 @@ export default async function AdminDirectoryPage() {
 
       {!isDbConfigured() && (
         <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">
-          MongoDB isn&apos;t connected yet — set <code>MONGODB_URI</code> in{" "}
+          the database isn&apos;t connected yet — set <code>DATABASE_URL</code> in{" "}
           <code>.env.local</code> to add and manage listings.
         </div>
       )}

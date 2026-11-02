@@ -1,7 +1,8 @@
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type ExpertiseItemDoc } from "@/lib/models";
 import { expertiseItems, type ExpertiseItem } from "@/data/expertiseFallback";
 import type { EntitySeo } from "./seo-fields";
+import { neverImported } from "./store";
 
 export type ExpertiseView = ExpertiseItem & { seo?: EntitySeo };
 
@@ -33,6 +34,7 @@ export async function getExpertiseList(): Promise<ExpertiseView[]> {
         const docs = await col.find({ status: "published" }).sort({ order: 1 }).toArray();
         return docs.map(fromDoc);
       }
+      if (!(await neverImported("expertise"))) return []; // everything was deleted on purpose
     } catch (err) {
       console.error("[expertise] DB read failed, using defaults:", err);
     }

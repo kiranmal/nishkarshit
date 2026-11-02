@@ -1,8 +1,8 @@
 "use server";
 
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type SeoMetaDoc } from "@/lib/models";
 import { assertPermission } from "@/lib/auth";
 import { safeUrl } from "@/lib/cms/schema";

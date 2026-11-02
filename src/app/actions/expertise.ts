@@ -1,12 +1,12 @@
 "use server";
 
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type FormSubmissionDoc } from "@/lib/models";
 import { rateLimit, clientMeta } from "@/lib/rate-limit";
 
 export type ExpertiseEnquiryResult = { success: true } | { success: false; error: string };
 
-/** Stores a submission from /expertise/[slug]/enquiry in MongoDB (shown in Admin → Forms). */
+/** Stores a submission from /expertise/[slug]/enquiry in the database (shown in Admin → Forms). */
 export async function submitExpertiseEnquiryAction(
   slug: string,
   title: string,
@@ -28,7 +28,7 @@ export async function submitExpertiseEnquiryAction(
     return { success: false, error: "Too many submissions. Please try again in a few minutes." };
   }
   if (!isDbConfigured()) {
-    console.error("[expertise-enquiry] MONGODB_URI not set — enquiry NOT saved");
+    console.error("[expertise-enquiry] DATABASE_URL not set — enquiry NOT saved");
     return { success: false, error: "Enquiries are temporarily unavailable. Please contact us by phone or WhatsApp." };
   }
   try {

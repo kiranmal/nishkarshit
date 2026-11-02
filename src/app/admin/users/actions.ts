@@ -1,9 +1,9 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type AdminUserDoc } from "@/lib/models";
 import { assertPermission } from "@/lib/auth";
 

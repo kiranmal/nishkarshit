@@ -1,31 +1,12 @@
-const pillars = [
-  {
-    icon: "👥",
-    color: "#e11d8f",
-    title: "PEOPLE",
-    desc: "We connect the best talent to the best businesses, dream teams to leaders, and change agents to visionaries. Explore more about our Award-Winning Recruitment, Professional Staffing and other leading services like Compliance.",
-  },
-  {
-    icon: "⚙️",
-    color: "#c026d3",
-    title: "PROCESS",
-    desc: "Navigate everyday operational challenges at ease with our strategic, innovative and tech-powered Contact Center and Back Office (Domestic and International), Field Services Management and Background Verification services.",
-  },
-  {
-    icon: "💠",
-    color: "#7c3aed",
-    title: "TECHNOLOGY",
-    desc: "Discover transformative technology solutions that drive your business to the next level. Our flexible and adaptable product and services suite includes AI, Automation and the likes, tailored to your business needs.",
-  },
-];
+import type { PeopleProcessContent } from "@/lib/cms/home";
 
-export default function PeopleProcess({
-  heading,
-  description,
-}: { heading?: string; description?: string } = {}) {
+export default function PeopleProcess({ content }: { content: PeopleProcessContent }) {
+  const { heading, description } = content;
+  const pillars = content.cards.filter((c) => c.visible !== false);
   return (
     <section className="py-16 md:py-20 bg-[#0B243D]">
       <div className="max-w-[1300px] mx-auto px-4 md:px-8 text-center mb-10">
+        {heading && <h2 className="text-3xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-poppins)" }}>{heading}</h2>}
         {description && (
           <p className="text-gray-500 max-w-xl mx-auto">{description}</p>
         )}
@@ -44,7 +25,7 @@ export default function PeopleProcess({
             >
               {p.title}
             </h3>
-            <p className="text-sm text-gray-500 leading-relaxed">{p.desc}</p>
+            <p className="text-sm text-gray-500 leading-relaxed">{p.description}</p>
           </div>
         ))}
       </div>

@@ -4,36 +4,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-const solutions = [
-  {
-    title: "Business Solutions",
-    desc: "End-to-end technology solutions built around how your business runs.",
-    image: "https://nishkarshit.com/assets/business-ZsSXwq_Y.jpg",
-  },
-  {
-    title: "Infrastructure",
-    desc: "Reliable IT infrastructure and cloud setup that scales with you.",
-    image: "https://nishkarshit.com/assets/infra-CZsnXnNs.jpg",
-  },
-  {
-    title: "Loans",
-    desc: "Fast, transparent loan facilitation for individuals and businesses.",
-    image: "https://nishkarshit.com/assets/loans-YGZ8EeNz.jpg",
-  },
-  {
-    title: "Manpower",
-    desc: "Skilled workforce solutions and staffing support across sectors.",
-    image: "https://nishkarshit.com/assets/manpower-KZfVqRy-.jpg",
-  },
-];
+import { optimizeImage } from "@/lib/img";
+import type { BusinessSolutionsContent } from "@/lib/cms/home";
+import Link from "next/link";
 
-export default function BusinessSolutionsSlider({
-  heading,
-  description,
-}: {
-  heading?: string;
-  description?: string;
-} = {}) {
+export default function BusinessSolutionsSlider({ content }: { content: BusinessSolutionsContent }) {
+  const { heading, description } = content;
+  const solutions = content.items.filter((x) => x.visible !== false);
   return (
     <section className="py-16 md:py-20 bg-[#062E49]">
       {/* Section Heading */}
@@ -42,7 +19,7 @@ export default function BusinessSolutionsSlider({
           className="text-3xl md:text-4xl font-bold text-white"
           style={{ fontFamily: "var(--font-poppins)" }}
         >
-          {heading || "Bringing Transformation to Every Business"}
+          {heading}
         </h2>
 
         {description && <p className="text-white/80 mt-2">{description}</p>}
@@ -58,7 +35,7 @@ export default function BusinessSolutionsSlider({
             delay: 2800,
             disableOnInteraction: false,
           }}
-          loop
+          loop={solutions.length > 3}
           breakpoints={{
             640: {
               slidesPerView: 2.2,
@@ -68,14 +45,16 @@ export default function BusinessSolutionsSlider({
             },
           }}
         >
-          {solutions.map((s) => (
-            <SwiperSlide key={s.title}>
+          {solutions.map((s, idx) => (
+            <SwiperSlide key={idx}>
               {/* ONE CARD */}
               <div className="rounded-2xl overflow-hidden bg-[#F8FAFC] shadow-lg h-full">
                 {/* IMAGE */}
                 <div className="h-56 overflow-hidden">
                   <img
-                    src={s.image}
+                    loading="lazy"
+                    decoding="async"
+                    src={optimizeImage(s.image, 900)}
                     alt={s.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                   />
@@ -84,11 +63,11 @@ export default function BusinessSolutionsSlider({
                 {/* TEXT BELOW IMAGE */}
                 <div className="p-6 text-left">
                   <h3 className="text-xl font-bold text-[#062E49] mb-2">
-                    {s.title}
+                    {s.link ? <Link href={s.link}>{s.title}</Link> : s.title}
                   </h3>
 
                   <p className="text-sm text-[#062E49]/75 leading-relaxed">
-                    {s.desc}
+                    {s.description}
                   </p>
                 </div>
               </div>

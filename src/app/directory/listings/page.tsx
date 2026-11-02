@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Search, MapPin, Phone } from "lucide-react";
 import DirectoryHeader from "@/components/directory/DirectoryHeader";
 import DirectoryFooter from "@/components/directory/DirectoryFooter";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryListing } from "@/lib/models";
 import { fallbackListings } from "@/data/directoryFallback";
 

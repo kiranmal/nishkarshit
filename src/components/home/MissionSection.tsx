@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { MissionContent } from "@/lib/cms/home";
 
 export default function MissionSection({
-  heading,
-  description,
+  content,
 }: {
-  heading?: string;
-  description?: string;
-} = {}) {
+  content: MissionContent;
+}) {
   const vantaRef = useRef<HTMLDivElement>(null);
   const vantaEffect = useRef<any>(null);
 
@@ -58,6 +57,19 @@ export default function MissionSection({
           // Camera / movement feel
           showDots: true,
         });
+
+        // Vanta deliberately aims the camera to the LEFT of the globe on every screen (so desktop text can sit on the left),
+        // which pushes the globe off to one side on phones. On narrow screens re-aim the camera at the globe's own centre
+        // after Vanta's per-frame update and before it renders, so the globe sits exactly in the middle.
+        const effect = vantaEffect.current;
+        if (effect && typeof effect.onUpdate === "function") {
+          const original = effect.onUpdate.bind(effect);
+          effect.onUpdate = () => {
+            original();
+            if (window.innerWidth < 768 && effect.camera)
+              effect.camera.lookAt(new THREE.Vector3(0, 15, 0));
+          };
+        }
       } catch (error) {
         console.error("Vanta Globe failed to initialize:", error);
       }
@@ -76,25 +88,16 @@ export default function MissionSection({
   }, []);
 
   return (
-    <section
-      className="relative overflow-hidden bg-[#12343B] text-white text-left"
-      style={{ minHeight: "520px" }}
-    >
-      {/* VANTA GLOBE BACKGROUND */}
-      <div ref={vantaRef} className="absolute inset-0 z-0" />
-
-      {/* Dark overlay to keep text readable */}
+    <section className="relative overflow-hidden bg-[#12343B] text-white text-left md:min-h-[520px]">
+      {/* VANTA GLOBE — phones: its own centred 340px stage above the text · desktop: full-section background */}
       <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at center, transparent 20%, rgba(5,11,26,0.35) 65%, rgba(5,11,26,0.75) 100%)",
-        }}
+        ref={vantaRef}
+        className="absolute inset-x-0 top-0 z-0 h-[340px] md:inset-0 md:h-auto"
       />
 
-      {/* Soft blue glow */}
+      {/* Dark overlay to keep text readable (desktop, where text sits over the globe) */}
       <div
-        className="absolute inset-0 z-[1] pointer-events-none"
+        className="absolute inset-0 z-[1] pointer-events-none hidden md:block"
         style={{
           background:
             "radial-gradient(circle at center, transparent 20%, rgba(5,11,26,0.35) 65%, rgba(5,11,26,0.75) 100%)",
@@ -102,21 +105,20 @@ export default function MissionSection({
       />
 
       {/* CONTENT */}
-      <div className="relative z-[2] min-h-[520px] flex items-center justify-start px-6 md:px-16 lg:px-24">
+      <div className="relative z-[2] flex items-center justify-start px-6 pt-[352px] pb-12 md:min-h-[520px] md:px-16 md:py-0 lg:px-24">
         <div className="max-w-2xl">
-          <p className="text-brand text-3xl font-bold uppercase tracking-wide mb-8">
-            {heading || "Our Mission"}
+          <p className="text-brand text-2xl md:text-3xl font-bold uppercase tracking-wide mb-5 md:mb-8">
+            {content.heading}
           </p>
 
           <h2
-            className="text-lg md:text-xl leading-relaxed tracking-wide mb-6 font-normal"
+            className="text-base md:text-xl leading-relaxed md:tracking-wide mb-6 font-normal"
             style={{
               fontFamily: "var(--font-poppins)",
               fontWeight: 400,
             }}
           >
-            {description ||
-              "At Nishkarsh IT Solution Pvt. Ltd., our mission is to deliver innovative, scalable, and cost-effective IT and business solutions through collaborative teamwork, integrity, and a client‑centric approach. We empower organizations across Banking, Education, Information Technology, Business Solutions, Software Development, Cloud Services, Digital Marketing, Startup Support, Cyber Security, Fintech Services, B2b & B2c Solutions, Government Projects, Manpower, Insurance, Healthcare, Retail, Pharma, and beyond by integrating advanced AI applications, automation, and digital technologies to solve complex challenges and catalyze sustainable growth. By establishing enduring partnerships grounded in trust, quality, and transparency, we build future-ready ecosystems that uplift communities and elevate business performance nationwide."}
+            {content.text}
           </h2>
         </div>
       </div>

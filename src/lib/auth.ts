@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ensureContentSynced } from "@/lib/cms/auto-sync";
 
 const COOKIE_NAME = "nis_admin_session";
 const SESSION_TTL = "7d";
@@ -67,7 +68,10 @@ export async function getCurrentAdmin(): Promise<AdminSession | null> {
   const store = await cookies();
   const token = store.get(COOKIE_NAME)?.value;
   if (!token) return null;
-  return verifySessionToken(token);
+  const session = await verifySessionToken(token);
+  // Signed-in admin: make sure the default site content is in the database before any admin screen reads it (no-op after the first run).
+  if (session) await ensureContentSynced();
+  return session;
 }
 
 /**

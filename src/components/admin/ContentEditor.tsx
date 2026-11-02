@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import ImageUploadField from "@/components/admin/ImageUploadField";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import { blankItem, type Field } from "@/lib/cms/schema";
 
 type Obj = Record<string, unknown>;
@@ -25,6 +26,13 @@ function FieldInput({ field, value, onChange }: { field: Field; value: unknown; 
         <div>{label}
           <textarea className="input min-h-24" rows={4} value={String(value ?? "")} maxLength={field.max}
             onChange={(e) => onChange(e.target.value)} />{help}</div>
+      );
+    case "richtext":
+      return <div>{label}<RichTextEditor value={String(value ?? "")} onChange={onChange} />{help}</div>;
+    case "date":
+      return (
+        <div>{label}
+          <input type="datetime-local" className="input" value={String(value ?? "")} onChange={(e) => onChange(e.target.value)} />{help}</div>
       );
     case "image":
       return <div><ImageUploadField label={field.label} value={String(value ?? "")} onChange={onChange} />{help}</div>;
@@ -74,7 +82,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: unknown; 
               <details key={i} className="border border-gray-200 rounded-lg bg-gray-50/60" open={items.length <= 3}>
                 <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none">
                   <span className="text-sm font-medium text-gray-900 flex-1 truncate">
-                    {i + 1}. {String(item[field.itemTitle] || "(untitled)")}
+                    {i + 1}. {String(item[field.itemTitle] || "(untitled)")}{item.visible === false || item.active === false ? <span className="ml-2 text-[10px] uppercase font-bold bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">hidden</span> : null}
                   </span>
                   <button type="button" aria-label="Move up" onClick={(e) => { e.preventDefault(); move(i, -1); }} className="p-1 text-gray-500 hover:text-gray-900"><ChevronUp size={16} /></button>
                   <button type="button" aria-label="Move down" onClick={(e) => { e.preventDefault(); move(i, 1); }} className="p-1 text-gray-500 hover:text-gray-900"><ChevronDown size={16} /></button>
@@ -103,7 +111,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: unknown; 
 function Fields({ fields, value, onChange }: { fields: Field[]; value: Obj; onChange: (v: Obj) => void }) {
   return (
     <>
-      {fields.map((f) => (
+      {fields.filter((f) => !f.showWhen || f.showWhen.in.includes(String(value[f.showWhen.field] ?? ""))).map((f) => (
         <FieldInput key={f.name} field={f} value={value[f.name]} onChange={(v) => onChange({ ...value, [f.name]: v })} />
       ))}
     </>
@@ -117,7 +125,7 @@ type SaveResult = { ok: true; data: Record<string, unknown> } | { ok: false; err
  * UI edits site content, expertise pages, team members, etc.
  */
 export default function ContentEditor({
-  saveAction, resetAction, fields, initial, customised = true, publicPath, saveLabel = "Save changes",
+  saveAction, resetAction, fields, initial, customised = true, publicPath, saveLabel = "Save changes", wide = false,
 }: {
   saveAction: (json: string) => Promise<SaveResult>;
   resetAction?: () => Promise<SaveResult>;
@@ -126,6 +134,7 @@ export default function ContentEditor({
   customised?: boolean;
   publicPath?: string;
   saveLabel?: string;
+  wide?: boolean;
 }) {
   const [data, setData] = useState<Obj>(initial);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -150,7 +159,7 @@ export default function ContentEditor({
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className={wide ? "max-w-5xl" : "max-w-3xl"}>
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
         <Fields fields={fields} value={data} onChange={setData} />
       </div>

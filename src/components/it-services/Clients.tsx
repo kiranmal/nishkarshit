@@ -2,15 +2,17 @@
 
 import React from "react";
 
-import { companies, testimonials } from "@/data/it-services/";
+import type { ITServicesContent } from "@/lib/cms/it-services";
 import { InfiniteMovingCards } from "./ui/InfiniteCards";
 
-const Clients = () => {
+const Clients = ({ content }: { content: ITServicesContent["clients"] }) => {
+  const testimonials = content.testimonials;
+  const companies = content.companies.map((c, i) => ({ ...c, id: i + 1 }));
   return (
     <section id="testimonials" className="py-20">
       <h1 className="heading">
-        Kind words from
-        <span className="text-purple"> satisfied clients</span>
+        {content.heading}{" "}
+        <span className="text-purple">{content.accent}</span>
       </h1>
 
       <div className="flex flex-col items-center max-lg:mt-10">

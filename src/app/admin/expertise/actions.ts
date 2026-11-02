@@ -1,12 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type ExpertiseItemDoc } from "@/lib/models";
 import { assertPermission } from "@/lib/auth";
 import { sanitize } from "@/lib/cms/schema";
 import { externalizeImages } from "@/lib/cms/persist-images";
-import { expertiseFields, defaultExpertiseDocs } from "@/lib/cms/entities";
+import { expertiseFields } from "@/lib/cms/entities";
+import { seedExpertise } from "@/lib/cms/seed";
 
 type R = { ok: true; data: Record<string, unknown> } | { ok: false; error: string };
 
@@ -68,13 +69,7 @@ export async function toggleExpertiseAction(slug: string, publish: boolean) {
 /** Imports the code defaults. Existing records (default OR admin-edited) are never overwritten; custom ones are never touched. */
 export async function syncExpertiseDefaultsAction() {
   await assertPermission("content");
-  const db = await getDb();
-  const col = db.collection(COLLECTIONS.expertiseItems);
-  let added = 0, existing = 0;
-  for (const d of defaultExpertiseDocs()) {
-    const r = await col.updateOne({ slug: d.slug }, { $setOnInsert: { ...d, status: "published", source: "default", updatedAt: new Date() } }, { upsert: true });
-    if (r.upsertedCount) added++; else existing++;
-  }
+  const result = await seedExpertise(await getDb());
   refresh();
-  return { added, existing };
+  return result;
 }

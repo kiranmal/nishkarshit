@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { getCurrentAdmin, can } from "@/lib/auth";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type MediaDoc } from "@/lib/models";
 import { isCloudinaryConfigured, uploadToCloudinary } from "@/lib/cloudinary";
 import { sniffImage as sniff } from "@/lib/image-sniff";

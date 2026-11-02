@@ -124,7 +124,7 @@ export function validateAll(cfg: ApplicationConfig, values: FormValues): Record<
   return out;
 }
 
-/** Trim + normalise values into the shape persisted in MongoDB. Unknown keys are dropped. */
+/** Trim + normalise values into the shape persisted in the database. Unknown keys are dropped. */
 export function cleanSection(section: SectionDef, values: SectionValues): SectionValues {
   const out: SectionValues = {};
   for (const f of section.fields) {

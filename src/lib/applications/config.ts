@@ -44,7 +44,7 @@ export interface FieldDef {
 
 export interface SectionDef {
   key: SectionKey;
-  /** Property name on the stored MongoDB document. */
+  /** Property name on the stored the database document. */
   docKey: "personal" | "education" | "loan" | "additional";
   /** Label shown in the stepper. */
   stepLabel: string;

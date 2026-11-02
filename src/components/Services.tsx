@@ -1,40 +1,7 @@
 "use client";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
-const services = [
-  {
-    title: "Website Design & Development",
-    desc: "Responsive, fast, SEO-ready websites built for growth.",
-  },
-  {
-    title: "Digital Marketing",
-    desc: "SEO, social media, and performance campaigns that convert.",
-  },
-  {
-    title: "Software & Mobile Apps",
-    desc: "Custom software and cross-platform mobile applications.",
-  },
-  {
-    title: "CRM & ERP Development",
-    desc: "Streamline operations with tailored business systems.",
-  },
-  {
-    title: "E-commerce Solutions",
-    desc: "End-to-end online store design, build, and integration.",
-  },
-  {
-    title: "Manpower & Staffing",
-    desc: "Skilled resourcing across IT, banking, and retail sectors.",
-  },
-  {
-    title: "Banking & Fintech",
-    desc: "Loan facilitation, insurance, and financial technology services.",
-  },
-  {
-    title: "Healthcare & Pharma IT",
-    desc: "Digital systems built for healthcare and pharma operations.",
-  },
-];
+import type { ServicesContent } from "@/lib/cms/home";
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08 } },
@@ -152,7 +119,8 @@ function ServiceCard({ title, desc }: { title: string; desc: string }) {
     </div>
   );
 }
-export default function Services() {
+export default function Services({ content }: { content: ServicesContent }) {
+  const services = content.items.filter((x) => x.visible !== false);
   return (
     <section className="max-w-[1440px] mx-auto px-6 md:px-16 py-20">
       {" "}
@@ -161,14 +129,14 @@ export default function Services() {
         {" "}
         <p className="text-brand-cyan font-semibold tracking-wide mb-2">
           {" "}
-          What We Do{" "}
+          {content.eyebrow}{" "}
         </p>{" "}
         <h2
           className=" text-3xl md:text-4xl font-bold text-brand-navy "
           style={{ fontFamily: "var(--font-poppins)" }}
         >
           {" "}
-          Our Services{" "}
+          {content.heading}{" "}
         </h2>{" "}
       </div>{" "}
       {/* Services Grid */}{" "}
@@ -185,7 +153,7 @@ export default function Services() {
           <ServiceCard
             key={service.title}
             title={service.title}
-            desc={service.desc}
+            desc={service.description}
           />
         ))}{" "}
       </motion.div>{" "}
@@ -193,12 +161,12 @@ export default function Services() {
       <div className="text-center mt-12">
         {" "}
         <Link
-          href="/services"
+          href={content.buttonHref || "/services"}
           className=" inline-flex items-center justify-center rounded-full border-2 px-7 py-2.5 text-[15px] font-semibold transition-all duration-300 hover:bg-[#d8102e] hover:text-white "
           style={{ borderColor: "#d8102e", color: "#d8102e" }}
         >
           {" "}
-          View All Services{" "}
+          {content.buttonLabel}{" "}
         </Link>{" "}
       </div>{" "}
     </section>

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
 import ContentEditor from "@/components/admin/ContentEditor";
 import { requirePermission } from "@/lib/auth";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type ExpertiseItemDoc } from "@/lib/models";
 import { expertiseFields } from "@/lib/cms/entities";
 import { saveExpertiseAction } from "../actions";

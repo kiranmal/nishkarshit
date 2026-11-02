@@ -1,15 +1,15 @@
 "use server";
 
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/models";
 import { assertPermission } from "@/lib/auth";
 import { sanitize } from "@/lib/cms/schema";
 import { externalizeImages } from "@/lib/cms/persist-images";
 import { teamFields } from "@/lib/cms/entities";
-import { DEFAULT_MEMBERS } from "@/data/teamFallback";
+import { seedTeam } from "@/lib/cms/seed";
 
 type R = { ok: true; data: Record<string, unknown> } | { ok: false; error: string };
 const slugify = (v: string) => v.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
@@ -26,19 +26,9 @@ async function col() {
 /** Imports the shipped default members once. Existing slugs are never touched. */
 export async function syncTeamDefaultsAction() {
   await assertPermission("content");
-  const c = await col();
-  let added = 0, existing = 0;
-  for (const m of DEFAULT_MEMBERS) {
-    const now = new Date();
-    const r = await c.updateOne(
-      { slug: m.slug },
-      { $setOnInsert: { name: m.name, slug: m.slug, role: m.role, image: m.image, description: m.description ?? "", section: m.section, order: m.order, active: m.active, source: "default", createdAt: now, updatedAt: now } },
-      { upsert: true }
-    );
-    if (r.upsertedCount) added++; else existing++;
-  }
+  const result = await seedTeam(await getDb());
   refresh();
-  return { added, existing };
+  return result;
 }
 
 export async function addMemberAction(formData: FormData) {

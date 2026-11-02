@@ -1,3 +1,4 @@
+import type { TeamMemberDoc } from "@/lib/models";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import Header from "@/components/Header";
@@ -6,7 +7,8 @@ import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
 import ManagementTeam from "@/components/ManagementTeam";
 
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
+import { neverImported } from "@/lib/cms/store";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +20,8 @@ import { DEFAULT_MEMBERS, type TeamMember } from "@/data/teamFallback";
 
 /* =========================================================
    DEFAULT MEMBERS
-   These are shown when MongoDB is not connected
+   These are shown when the database is not connected
 ========================================================= */
-
 
 /* =========================================================
    GET MANAGEMENT TEAM
@@ -28,12 +29,12 @@ import { DEFAULT_MEMBERS, type TeamMember } from "@/data/teamFallback";
 
 async function getManagementTeam(): Promise<TeamMember[]> {
   /* -------------------------------------------------------
-     MongoDB NOT configured
+     the database NOT configured
      → Return 16 default members
   ------------------------------------------------------- */
 
   if (!isDbConfigured()) {
-    console.warn("MongoDB is not configured. Showing default team members.");
+    console.warn("Database is not configured. Showing default team members.");
 
     return DEFAULT_MEMBERS;
   }
@@ -42,7 +43,7 @@ async function getManagementTeam(): Promise<TeamMember[]> {
     const db = await getDb();
 
     const members = await db
-      .collection("management_team")
+      .collection<TeamMemberDoc>("management_team")
       .find({
         active: true,
       })
@@ -53,24 +54,22 @@ async function getManagementTeam(): Promise<TeamMember[]> {
       .toArray();
 
     /* -----------------------------------------------------
-       MongoDB connected but collection is empty
+       Database connected but collection is empty
        → Return default members
     ----------------------------------------------------- */
 
     if (members.length === 0) {
-      console.warn(
-        "No management team members found. Showing default members.",
-      );
-
-      return DEFAULT_MEMBERS;
+      // Only a fresh install shows the built-in sample members; after the first import the database is the truth.
+      if (await neverImported("team")) return DEFAULT_MEMBERS;
+      return [];
     }
 
     /* -----------------------------------------------------
-       Convert MongoDB documents
+       Convert database rows
     ----------------------------------------------------- */
 
     return members.map((member) => ({
-      _id: member._id.toString(),
+      _id: String(member._id),
 
       name: member.name || "",
 

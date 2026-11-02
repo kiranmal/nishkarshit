@@ -8,11 +8,10 @@ import {
   type MotionValue,
 } from "framer-motion";
 
-const sentence =
-  "The company's resource staff and members of the founding team have continuously offered dependable support services and consulting in the roles of executive, business partner, and consultant to a wide range of corporate houses. The company's core values are centred around establishing enduring business partnerships with its clients, of which target-oriented modern technology, dependability, ensured quality, and human relationships are the fundamental building blocks.";
-const words = sentence.split(" ");
+import type { TurbochargeContent } from "@/lib/cms/home";
 
-export default function Turbocharge() {
+export default function Turbocharge({ content }: { content: TurbochargeContent }) {
+  const words = content.text.split(" ").filter(Boolean);
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -23,7 +22,7 @@ export default function Turbocharge() {
     <section ref={ref} className="bg-brand-navy-deep py-28 md:py-36">
       <div className="max-w-[1000px] mx-auto px-6 md:px-10 gap-5">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-10 text-center">
-          Turbocharge Your Growth Potential
+          {content.heading}
         </h2>
         <p className="flex flex-wrap gap-x-3 gap-y-2 text-2xl md:text-2xl font-bold leading-snug text-center justify-center">
           {words.map((word, i) => {

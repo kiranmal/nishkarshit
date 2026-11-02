@@ -1,5 +1,5 @@
-import { ObjectId, type Filter, type Document } from "mongodb";
-import { getDb } from "@/lib/mongodb";
+import { ObjectId, type Filter, type Document } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, LEAD_STATUSES, type LeadStatus } from "@/lib/models";
 import { APPLICATION_CONFIGS } from "@/lib/applications/config";
 

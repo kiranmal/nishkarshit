@@ -17,79 +17,43 @@ import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
 import FestivalOverlay from "@/components/home/FestivalOverlay";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
-import { COLLECTIONS, type HomepageSectionConfigDoc } from "@/lib/models";
-import { homepageSectionDefaults } from "@/data/homepageSections";
+import { getHomeSections, plain } from "@/lib/cms/store";
+import type { HomeContentMap, HomeKey } from "@/lib/cms/home";
 import { getActiveFestival } from "@/lib/festival";
 
 export const dynamic = "force-dynamic";
 
-async function getSectionConfig(): Promise<
-  Record<string, HomepageSectionConfigDoc>
-> {
-  if (!isDbConfigured()) return {};
-  try {
-    const db = await getDb();
-    const docs = await db
-      .collection<HomepageSectionConfigDoc>(COLLECTIONS.homepageSections)
-      .find()
-      .toArray();
-    return Object.fromEntries(docs.map((d) => [d.key, d]));
-  } catch {
-    return {};
-  }
-}
+/** One renderer per homepage section. Layout + animation live in the components; ALL content comes from the database. */
+const RENDER: { [K in HomeKey]: (content: HomeContentMap[K]) => React.ReactNode } = {
+  hero: (c) => <Hero content={c} />,
+  peopleProcess: (c) => <PeopleProcess content={c} />,
+  turbocharge: (c) => <Turbocharge content={c} />,
+  mission: (c) => <MissionSection content={c} />,
+  industries: (c) => <IndustriesGrid content={c} />,
+  businessSolutions: (c) => <BusinessSolutionsSlider content={c} />,
+  services: (c) => <Services content={c} />,
+  differentiator: (c) => <Differentiator content={c} />,
+  publicWords: (c) => <PublicWords content={c} />,
+  gallery: (c) => <Gallery content={c} />,
+  location: (c) => <LocationSection content={c} />,
+  enquiry: (c) => <EnquirySection content={c} />,
+};
 
 export default async function Home() {
-  const config = await getSectionConfig();
-  const activeFestival = await getActiveFestival();
-
-  // Build the ordered, filtered list of section keys. Falls back to the
-  // built-in default order when a section has no admin override yet.
-  const order = homepageSectionDefaults
-    .map((s, i) => ({
-      key: s.key,
-      order: config[s.key]?.order ?? i,
-      visible: config[s.key]?.visible ?? true,
-    }))
-    .filter((s) => s.visible)
-    .sort((a, b) => a.order - b.order)
-    .map((s): string => s.key);
-
-  const isVisible = (key: string) => order.includes(key);
-  const override = (key: string) => ({
-    heading: config[key]?.heading,
-    description: config[key]?.description,
-  });
-
+  const [sections, activeFestival] = await Promise.all([getHomeSections(), getActiveFestival()]);
   return (
     <>
       {activeFestival && <FestivalOverlay festival={JSON.parse(JSON.stringify(activeFestival))} />}
       <TopBar />
       <Header />
       <main className="flex-1">
-        {isVisible("hero") && <Hero />}
-        {isVisible("peopleProcess") && (
-          <PeopleProcess {...override("peopleProcess")} />
-        )}
-        {isVisible("turbocharge") && <Turbocharge />}
-        {isVisible("mission") && <MissionSection {...override("mission")} />}
-        {isVisible("industries") && (
-          <IndustriesGrid {...override("industries")} />
-        )}
-        {isVisible("businessSolutions") && (
-          <BusinessSolutionsSlider {...override("businessSolutions")} />
-        )}
-
-        {isVisible("differentiator") && (
-          <Differentiator {...override("differentiator")} />
-        )}
-        {isVisible("publicWords") && (
-          <PublicWords {...override("publicWords")} />
-        )}
-        {isVisible("gallery") && <Gallery />}
-        {isVisible("location") && <LocationSection {...override("location")} />}
-        {isVisible("enquiry") && <EnquirySection />}
+        {sections
+          .filter((s) => s.visible)
+          .map((s) => (
+            <div key={s.key} style={{ display: "contents" }}>
+              {(RENDER[s.key] as (c: unknown) => React.ReactNode)(plain(s.content))}
+            </div>
+          ))}
       </main>
       <Footer />
       <FloatingButtons />

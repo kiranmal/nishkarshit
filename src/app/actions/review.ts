@@ -1,8 +1,8 @@
 "use server";
 
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryListing, type ReviewItem } from "@/lib/models";
 
 export type ReviewFormState = { success?: boolean; error?: string } | null;
@@ -21,7 +21,7 @@ export async function submitReviewAction(
     return { error: "Please add your name and a comment." };
   }
   if (!isDbConfigured()) {
-    return { error: "Reviews aren't available until MongoDB is configured." };
+    return { error: "Reviews aren't available until the database is configured." };
   }
 
   const review: ReviewItem = { name, comment, rating, createdAt: new Date() };

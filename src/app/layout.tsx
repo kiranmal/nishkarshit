@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Preloader from "@/components/Preloader";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
@@ -6,6 +6,12 @@ import { getHeader, getFooter, getSettings } from "@/lib/cms/content";
 import { getExpertiseList } from "@/lib/cms/expertise";
 
 /** Site-wide default metadata, driven by Admin → Site Settings. Pages override it. */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#17b6e8",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
   const keywords = s.defaultKeywords.split(",").map((k) => k.trim()).filter(Boolean);

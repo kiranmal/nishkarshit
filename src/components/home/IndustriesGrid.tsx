@@ -1,18 +1,9 @@
-const industries = [
-  { icon: "💻", name: "Information Technology" },
-  { icon: "🏦", name: "Banking & Finance" },
-  { icon: "🏥", name: "Healthcare" },
-  { icon: "🎓", name: "Education" },
-  { icon: "🏛️", name: "Government" },
-  { icon: "💊", name: "Pharma" },
-  { icon: "🛍️", name: "Retail" },
-  { icon: "📰", name: "Publishing" },
-];
+import Link from "next/link";
+import type { IndustriesContent } from "@/lib/cms/home";
 
-export default function IndustriesGrid({
-  heading,
-  description,
-}: { heading?: string; description?: string } = {}) {
+export default function IndustriesGrid({ content }: { content: IndustriesContent }) {
+  const { heading, description } = content;
+  const industries = content.items.filter((i) => i.visible !== false);
   return (
     <section className="py-16 md:py-20 bg-[#062E49]">
       <div className="max-w-[1300px] mx-auto px-4 md:px-8 text-center">
@@ -20,7 +11,7 @@ export default function IndustriesGrid({
           className="text-3xl md:text-4xl font-bold text-white mb-3"
           style={{ fontFamily: "var(--font-poppins)" }}
         >
-          {heading || "Major Industries We Service"}
+          {heading}
         </h2>
 
         {description && <p className="text-gray-200 mb-9">{description}</p>}
@@ -28,9 +19,10 @@ export default function IndustriesGrid({
         {!description && <div className="mb-9" />}
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-          {industries.map((ind) => (
+          {industries.map((ind, idx) => {
+            const card = (
             <div
-              key={ind.name}
+              key={idx}
               className="
                 flex flex-col items-center justify-center
                 gap-3
@@ -49,10 +41,13 @@ export default function IndustriesGrid({
 
               {/* Industry title */}
               <p className="text-sm md:text-base font-semibold text-[#062E49]">
-                {ind.name}
+                {ind.title}
               </p>
+              {ind.description && <p className="text-xs text-gray-500 text-center">{ind.description}</p>}
             </div>
-          ))}
+            );
+            return ind.link ? <Link key={idx} href={ind.link} className="block">{card}</Link> : card;
+          })}
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type SiteContentDoc } from "@/lib/models";
 import { mergeDefaults } from "./schema";
 import { CMS_MODULES, defaultHeader, defaultFooter, defaultSettings, type HeaderContent, type FooterContent, type SettingsContent } from "./modules";

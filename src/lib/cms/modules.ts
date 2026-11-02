@@ -230,7 +230,14 @@ export interface ModuleDef {
   publicPath?: string;
 }
 
+import { defaultITServices, itServicesFields } from "./it-services";
+
 export const CMS_MODULES: Record<string, ModuleDef> = {
+  itServices: {
+    key: "itServices", title: "IT Services page",
+    description: "Hero text, tech-stack cards, recent projects, testimonials and client logos of /it-services.",
+    fields: itServicesFields, defaults: defaultITServices as unknown as Record<string, unknown>, permission: "content", publicPath: "/it-services",
+  },
   header: {
     key: "header", title: "Header & Navigation",
     description: "Logo, menu items, dropdowns, external links (including the Directory) and the highlighted CTA button.",

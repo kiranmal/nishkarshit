@@ -5,7 +5,7 @@ import { TextGenerateEffect } from "./ui/TextGenerateEffect";
 import SocialSidebar from "./SocialSidebar";
 import Image from "next/image";
 
-const Hero = () => {
+const Hero = ({ content }: { content: { eyebrow: string; heading: string; tagline: string } }) => {
   return (
     <div className="relative min-h-screen pt-24 pb-16 md:pt-36 md:pb-24 overflow-hidden flex items-center justify-center">
       {/* Background Video */}
@@ -59,18 +59,16 @@ const Hero = () => {
       {/* Hero Content */}
       <div className="relative z-40 flex flex-col items-center justify-center px-4 text-center space-y-4">
         <p className="uppercase tracking-widest text-xs sm:text-sm max-w-xs pt-6 sm:pt-6 md:pt-8">
-          Grow Your Business With Niskarsh
+          {content.eyebrow}
         </p>
 
         <TextGenerateEffect
-          words={
-            "Niskarsh IT Solution\nTransforming Concepts into Seamless User Experiences"
-          }
+          words={content.heading}
           className="text-[28px] sm:text-[36px] md:text-5xl lg:text-6xl font-semibold leading-snug sm:leading-tight whitespace-pre-line"
         />
 
         <p className="text-sm sm:text-base md:text-lg lg:text-2xl text-muted-foreground">
-          The next generation Technology
+          {content.tagline}
         </p>
       </div>
     </div>

@@ -6,8 +6,14 @@ import {
   submitHomeEnquiryAction,
   type EnquiryFormState,
 } from "@/app/actions/enquiry";
+import type { EnquiryContent } from "@/lib/cms/home";
 
-export default function EnquirySection() {
+/** Heading, texts, WhatsApp/phone buttons and labels come from the database (Admin → Homepage → "Enquiry"). */
+export default function EnquirySection({
+  content,
+}: {
+  content: EnquiryContent;
+}) {
   const [state, formAction, pending] = useActionState<
     EnquiryFormState,
     FormData
@@ -18,24 +24,24 @@ export default function EnquirySection() {
       <div className="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden shadow-sm ">
         {/* Chat with our team */}
         <div className=" text-white p-8 md:p-10 flex flex-col justify-center">
-          <h3 className="text-2xl font-bold mb-3">Chat With Our Team</h3>
+          <h3 className="text-2xl font-bold mb-3">{content.chatTitle}</h3>
           <p className="text-white/60 mb-8 leading-relaxed">
-            Our team are available to answer all your questions.
+            {content.chatText}
           </p>
           <div className="space-y-3">
             <a
-              href="https://wa.me/919219572223"
+              href={content.whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 bg-white/10 hover:bg-white/20 rounded-lg px-5 py-3 transition-colors"
             >
-              <MessageCircle size={18} /> Chat on WhatsApp
+              <MessageCircle size={18} /> {content.whatsappLabel}
             </a>
             <a
-              href="tel:+919219572223"
+              href={content.phoneHref}
               className="flex items-center gap-3 bg-white/10 hover:bg-white/20 rounded-lg px-5 py-3 transition-colors"
             >
-              <Phone size={18} /> +91 9219572223
+              <Phone size={18} /> {content.phoneLabel}
             </a>
           </div>
         </div>
@@ -44,8 +50,7 @@ export default function EnquirySection() {
         <div className="bg-[#0F1624] p-8 md:p-10">
           {state?.success ? (
             <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-4 py-3">
-              Thanks — your enquiry has been submitted. We&apos;ll be in touch
-              soon.
+              {content.successText}
             </p>
           ) : (
             <form action={formAction} className="space-y-4">
@@ -53,7 +58,7 @@ export default function EnquirySection() {
                 className="text-3xl md:text-4xl font-bold text-[#FFFFFF]"
                 style={{ fontFamily: "var(--font-poppins)" }}
               >
-                Create An Enquiry
+                {content.formTitle}
               </h2>
               <div>
                 <label className="block text-sm font-medium text-[#FFFFFF] mb-1.5">
@@ -89,7 +94,7 @@ export default function EnquirySection() {
                 disabled={pending}
                 className="rounded-full bg-brand-navy text-white text-sm font-semibold px-8 py-3 hover:bg-brand-cyan transition-colors disabled:opacity-60"
               >
-                {pending ? "Submitting…" : "Submit Enquiry"}
+                {pending ? "Submitting…" : content.submitLabel}
               </button>
             </form>
           )}

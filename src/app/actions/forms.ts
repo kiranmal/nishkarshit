@@ -1,6 +1,6 @@
 "use server";
 
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { rateLimit, clientMeta } from "@/lib/rate-limit";
 import {
   COLLECTIONS,
@@ -20,7 +20,7 @@ async function saveOrLog<T extends object>(
   doc: T
 ): Promise<FormState> {
   if (!isDbConfigured()) {
-    console.error(`[${collection}] MONGODB_URI not set — submission NOT saved`);
+    console.error(`[${collection}] DATABASE_URL not set — submission NOT saved`);
     return { error: "This form is temporarily unavailable. Please contact us by phone or WhatsApp." };
   }
   const meta = await clientMeta();

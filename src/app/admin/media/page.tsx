@@ -1,6 +1,6 @@
 import AdminShell from "@/components/admin/AdminShell";
 import { requirePermission, can } from "@/lib/auth";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type MediaDoc } from "@/lib/models";
 import { isCloudinaryConfigured } from "@/lib/cloudinary";
 import { MediaGrid, UploadButton } from "./MediaGrid";

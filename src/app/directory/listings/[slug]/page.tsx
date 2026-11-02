@@ -4,7 +4,7 @@ import DirectoryHeader from "@/components/directory/DirectoryHeader";
 import DirectoryFooter from "@/components/directory/DirectoryFooter";
 import QuickInquiryForm from "@/components/directory/QuickInquiryForm";
 import ReviewForm from "@/components/directory/ReviewForm";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryListing } from "@/lib/models";
 import { fallbackListings, type FallbackListing } from "@/data/directoryFallback";
 

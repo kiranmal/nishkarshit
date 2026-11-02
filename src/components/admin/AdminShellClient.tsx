@@ -10,15 +10,40 @@ type NavLink = { href: string; label: string; permission?: Permission };
 const navGroups: { label: string; links: NavLink[] }[] = [
   { label: "Overview", links: [{ href: "/admin", label: "Dashboard" }] },
   {
+    label: "Home",
+    links: [{ href: "/admin/homepage", label: "Homepage Sections" }],
+  },
+  {
+    label: "Education",
+    links: [{ href: "/admin/education", label: "Education Tabs & Content" }],
+  },
+  {
+    label: "Blogs",
+    links: [{ href: "/admin/blogs", label: "Blog Posts" }],
+  },
+  {
+    label: "Footer",
+    links: [
+      { href: "/admin/footer", label: "Footer Settings" },
+      { href: "/admin/footer-pages", label: "Footer Pages" },
+    ],
+  },
+  {
+    label: "Banking",
+    links: [
+      { href: "/admin/banking/csp", label: "CSP" },
+      { href: "/admin/banking/loans", label: "Loans" },
+      { href: "/admin/banking/hardware", label: "Hardware" },
+    ],
+  },
+  {
     label: "Website",
     links: [
-      { href: "/admin/homepage", label: "Homepage Sections" },
       { href: "/admin/header", label: "Header & Navigation" },
-      { href: "/admin/footer", label: "Footer" },
       { href: "/admin/expertise", label: "Expertise Pages" },
       { href: "/admin/management-team", label: "Management Team" },
       { href: "/admin/services", label: "Services Page" },
-      { href: "/admin/blogs", label: "Blogs" },
+      { href: "/admin/directory-blogs", label: "Directory Blogs" },
       { href: "/admin/careers", label: "Careers / Jobs" },
       { href: "/admin/events", label: "Festivals / Events" },
     ],
@@ -32,9 +57,9 @@ const navGroups: { label: string; links: NavLink[] }[] = [
     links: [{ href: "/admin/media", label: "Media Library", permission: "media" }],
   },
   {
-    label: "Site",
+    label: "SEO & Site",
     links: [
-      { href: "/admin/seo", label: "SEO", permission: "seo" },
+      { href: "/admin/seo", label: "Global / Page SEO", permission: "seo" },
       { href: "/admin/settings", label: "Site Settings", permission: "settings" },
       { href: "/admin/users", label: "Users & Roles", permission: "users" },
     ],

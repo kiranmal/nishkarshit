@@ -1,4 +1,4 @@
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type MediaDoc } from "@/lib/models";
 import { isCloudinaryConfigured, uploadToCloudinary } from "@/lib/cloudinary";
 import { sniffImage } from "@/lib/image-sniff";

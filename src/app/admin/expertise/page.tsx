@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import { requirePermission, can } from "@/lib/auth";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type ExpertiseItemDoc } from "@/lib/models";
 import { defaultExpertiseDocs } from "@/lib/cms/entities";
 import { addExpertiseAction, deleteExpertiseAction, syncExpertiseDefaultsAction, toggleExpertiseAction } from "./actions";

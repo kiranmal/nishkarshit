@@ -155,7 +155,7 @@ export default function Footer() {
           grid
           max-w-[1440px]
           grid-cols-1
-          gap-10
+          gap-8 md:gap-10
           px-6
           pb-12
           pt-16
@@ -171,30 +171,41 @@ export default function Footer() {
           >
             {footer.brandName}
           </h3>
-          <p className="max-w-sm text-sm leading-7 text-white/70">{footer.about}</p>
+          <p className="max-w-sm text-sm leading-7 text-white/70">
+            {footer.about}
+          </p>
         </div>
 
-        {/* LINK COLUMNS */}
-        {footer.columns.map((col, ci) => (
-          <div key={`${col.title}-${ci}`}>
-            <h3 className="mb-5 text-lg font-semibold text-white">{col.title}</h3>
-            <ul className="space-y-3 text-sm text-white/70">
-              {col.links
-                .filter((l) => l.visible)
-                .map((l, li) => (
-                  <li key={`${l.label}-${li}`}>
-                    <Link href={l.href || "#"} className="hover:text-white">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
+        {/* LINK COLUMNS — phones: one flex row (About Us | Services side by side) · md+: "contents" hands the columns straight to the 4-column grid */}
+        <div className="flex flex-row flex-wrap gap-x-8 gap-y-8 md:contents">
+          {footer.columns.map((col, ci) => (
+            <div
+              key={`${col.title}-${ci}`}
+              className="min-w-[140px] flex-1 md:min-w-0 md:flex-none"
+            >
+              <h3 className="mb-4 text-base font-semibold text-white md:mb-5 md:text-lg">
+                {col.title}
+              </h3>
+              <ul className="space-y-3 text-sm text-white/70">
+                {col.links
+                  .filter((l) => l.visible)
+                  .map((l, li) => (
+                    <li key={`${l.label}-${li}`}>
+                      <Link href={l.href || "#"} className="hover:text-white">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
         {/* CONTACT */}
         <div>
-          <h2 className="font-semibold mb-2 text-white">{footer.contactTitle}</h2>
+          <h2 className="font-semibold mb-2 text-white">
+            {footer.contactTitle}
+          </h2>
           <ul className="space-y-1 text-gray-300 mb-4">
             {footer.contactLines.map((line, i) => (
               <li key={i}>
@@ -209,35 +220,55 @@ export default function Footer() {
             ))}
           </ul>
           <div className="mt-6 flex items-center gap-4">
-            {footer.facebook && <a
-              href={footer.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-opacity hover:opacity-70"
-            >
-              <FacebookIcon />
-            </a>}
+            {footer.facebook && (
+              <a
+                href={footer.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-70"
+              >
+                <FacebookIcon />
+              </a>
+            )}
 
-            {footer.instagram && <a
-              href={footer.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-opacity hover:opacity-70"
-            >
-              <InstagramIcon />
-            </a>}
+            {footer.instagram && (
+              <a
+                href={footer.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-70"
+              >
+                <InstagramIcon />
+              </a>
+            )}
 
-            {footer.linkedin && <a
-              href={footer.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-opacity hover:opacity-70"
-            >
-              <LinkedinIcon />
-            </a>}
+            {footer.linkedin && (
+              <a
+                href={footer.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-70"
+              >
+                <LinkedinIcon />
+              </a>
+            )}
             {footer.youtube && (
-              <a href={footer.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white transition-opacity hover:opacity-70">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
+              <a
+                href={footer.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="text-white transition-opacity hover:opacity-70"
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z" />
+                </svg>
               </a>
             )}
           </div>

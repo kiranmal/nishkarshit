@@ -1,25 +1,13 @@
-const points = [
-  {
-    title: "End-to-end delivery",
-    desc: "From strategy to support, one team owns the outcome.",
-  },
-  {
-    title: "Industry expertise",
-    desc: "Deep experience across IT, banking, healthcare and more.",
-  },
-  {
-    title: "Transparent process",
-    desc: "Clear timelines, honest updates, no surprises.",
-  },
-];
+import type { DifferentiatorContent } from "@/lib/cms/home";
 
+/** All text comes from the database (Admin → Homepage → "We Are The Differentiator"). */
 export default function Differentiator({
-  heading,
-  description,
+  content,
 }: {
-  heading?: string;
-  description?: string;
-} = {}) {
+  content: DifferentiatorContent;
+}) {
+  const { eyebrow, heading, description } = content;
+  const points = (content.items ?? []).filter((p) => p.visible !== false);
   return (
     <section className="relative py-24 md:py-32 overflow-hidden bg-[#062E48] text-white">
       {/* =========================
@@ -116,15 +104,17 @@ export default function Differentiator({
       <div className="relative z-10 max-w-[1300px] mx-auto px-4 md:px-8">
         {/* Heading */}
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <p className="text-[#FE9A00] text-sm font-bold uppercase tracking-wide mb-3">
-            What we done
-          </p>
+          {eyebrow && (
+            <p className="text-[#FE9A00] text-sm font-bold uppercase tracking-wide mb-3">
+              {eyebrow}
+            </p>
+          )}
 
           <h2
             className="text-3xl md:text-4xl font-bold text-[#FE9A00]"
             style={{ fontFamily: "var(--font-poppins)" }}
           >
-            {heading || "We Are The Differentiator You Need"}
+            {heading}
           </h2>
 
           {description && <p className="text-white/60 mt-3">{description}</p>}
@@ -132,9 +122,9 @@ export default function Differentiator({
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {points.map((p) => (
+          {points.map((p, i) => (
             <div
-              key={p.title}
+              key={`${p.title}-${i}`}
               className="
                 bg-white
                 border border-white/20
@@ -159,7 +149,7 @@ export default function Differentiator({
                 className="text-sm leading-relaxed"
                 style={{ color: "#1E2939" }}
               >
-                {p.desc}
+                {p.description}
               </p>
             </div>
           ))}

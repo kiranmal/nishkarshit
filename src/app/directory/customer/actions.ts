@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type DirectoryCustomerDoc } from "@/lib/models";
 import { createSessionToken } from "@/lib/auth";
 
@@ -35,7 +35,7 @@ export async function customerSignupAction(
   }
   if (!isDbConfigured()) {
     return {
-      error: "MONGODB_URI is not configured yet — set it in .env.local first.",
+      error: "DATABASE_URL is not configured yet — set it in .env.local first.",
     };
   }
 
@@ -85,7 +85,7 @@ export async function customerLoginAction(
   }
   if (!isDbConfigured()) {
     return {
-      error: "MONGODB_URI is not configured yet — set it in .env.local first.",
+      error: "DATABASE_URL is not configured yet — set it in .env.local first.",
     };
   }
 
@@ -128,7 +128,7 @@ export async function clientLoginAction(
   }
   if (!isDbConfigured()) {
     return {
-      error: "MONGODB_URI is not configured yet — set it in .env.local first.",
+      error: "DATABASE_URL is not configured yet — set it in .env.local first.",
     };
   }
 

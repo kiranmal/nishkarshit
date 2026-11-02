@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type SiteContentDoc } from "@/lib/models";
 import { assertPermission } from "@/lib/auth";
 import { CMS_MODULES } from "@/lib/cms/modules";

@@ -1,9 +1,9 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { notFound } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
 import BusinessEditorTabs from "@/components/admin/BusinessEditorTabs";
 import ImageUploadField from "@/components/admin/ImageUploadField";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type DirectoryListing } from "@/lib/models";
 import {
   updateBasicInfoAction,

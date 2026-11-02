@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
       <p className="text-xs text-gray-400 mt-8">© 2026 NIS System. All rights reserved.</p>
       <p className="text-xs text-gray-400 mt-2 max-w-sm text-center">
         First time here? Run <code>npm run seed:admin</code> after setting{" "}
-        <code>MONGODB_URI</code> and <code>ADMIN_SESSION_SECRET</code> in{" "}
+        <code>DATABASE_URL</code> and <code>ADMIN_SESSION_SECRET</code> in{" "}
         <code>.env.local</code>.
       </p>
     </div>

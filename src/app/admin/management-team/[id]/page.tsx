@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import AdminShell from "@/components/admin/AdminShell";
 import ContentEditor from "@/components/admin/ContentEditor";
 import { requirePermission } from "@/lib/auth";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/models";
 import { teamFields } from "@/lib/cms/entities";
 import { saveMemberAction } from "../actions";

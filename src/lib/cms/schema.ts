@@ -2,13 +2,19 @@
  * Tiny schema system for the CMS content editor.
  * Client-safe: used by the admin editor (rendering) AND the server action (validation).
  */
+/** Show a field only while a sibling field holds one of the listed values (editor-only; ignored by validation). */
+export type ShowWhen = { field: string; in: string[] };
+type Base = { showWhen?: ShowWhen };
+
 export type Field =
-  | { type: "text" | "textarea" | "url" | "image" | "email"; name: string; label: string; help?: string; max?: number; placeholder?: string; noData?: boolean }
-  | { type: "boolean"; name: string; label: string; help?: string }
-  | { type: "number"; name: string; label: string; help?: string; min?: number; max?: number }
-  | { type: "select"; name: string; label: string; help?: string; options: { value: string; label: string }[] }
-  | { type: "list"; name: string; label: string; help?: string; itemTitle: string; fields: Field[]; max?: number; addLabel?: string }
-  | { type: "group"; name: string; label: string; help?: string; fields: Field[] };
+  | (Base & { type: "text" | "textarea" | "url" | "image" | "email"; name: string; label: string; help?: string; max?: number; placeholder?: string; noData?: boolean })
+  | (Base & { type: "richtext"; name: string; label: string; help?: string; max?: number })
+  | (Base & { type: "date"; name: string; label: string; help?: string })
+  | (Base & { type: "boolean"; name: string; label: string; help?: string })
+  | (Base & { type: "number"; name: string; label: string; help?: string; min?: number; max?: number })
+  | (Base & { type: "select"; name: string; label: string; help?: string; options: { value: string; label: string }[] })
+  | (Base & { type: "list"; name: string; label: string; help?: string; itemTitle: string; fields: Field[]; max?: number; addLabel?: string })
+  | (Base & { type: "group"; name: string; label: string; help?: string; fields: Field[] });
 
 export type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 type Obj = Record<string, unknown>;
@@ -41,12 +47,24 @@ export function sanitize(fields: Field[], input: unknown): Obj {
   const src = isObj(input) ? input : {};
   const out: Obj = {};
   for (const f of fields) {
+    // Conditional field whose condition isn't met for this object: skip it (lets several same-named
+    // definitions coexist, e.g. a different `items` shape per section type).
+    if (f.showWhen && !f.showWhen.in.includes(String(src[f.showWhen.field] ?? ""))) continue;
     const v = src[f.name];
     switch (f.type) {
       case "text":
       case "textarea":
         out[f.name] = (typeof v === "string" ? v : "").slice(0, f.max ?? (f.type === "textarea" ? 5000 : 500)).trim();
         break;
+      case "richtext":
+        // Length-capped here; HTML is whitelisted by sanitizeRichFields() (server-only) before storage.
+        out[f.name] = (typeof v === "string" ? v : "").slice(0, f.max ?? 200_000);
+        break;
+      case "date": {
+        const d = typeof v === "string" ? v.trim() : "";
+        out[f.name] = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?/.test(d) ? d.slice(0, 16) : "";
+        break;
+      }
       case "email": {
         const e = (typeof v === "string" ? v : "").trim().slice(0, 200);
         out[f.name] = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) ? e : "";
@@ -106,7 +124,7 @@ export function blankItem(fields: Field[]): Obj {
   const o: Obj = {};
   for (const f of fields) {
     o[f.name] =
-      f.type === "boolean" ? true : f.type === "number" ? 0 : f.type === "list" ? [] : f.type === "group" ? blankItem(f.fields) : f.type === "select" ? f.options[0]?.value ?? "" : "";
+      f.type === "boolean" ? (f.name === "noIndex" || f.name === "noFollow" ? false : true) : f.type === "number" ? 0 : f.type === "list" ? [] : f.type === "group" ? blankItem(f.fields) : f.type === "select" ? f.options[0]?.value ?? "" : "";
   }
   return o;
 }

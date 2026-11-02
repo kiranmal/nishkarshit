@@ -1,46 +1,31 @@
-const words = [
-  {
-    quote:
-      "Nishkarsh IT turned our idea into a working product in weeks, not months.",
-    name: "Rohit Sharma",
-    role: "Founder, Retail Startup",
-    image: "/images/rohit.jpg",
-  },
-  {
-    quote: "Reliable, responsive, and genuinely invested in our growth.",
-    name: "Priya Verma",
-    role: "Operations Head",
-    image: "/images/priya.jpg",
-  },
-  {
-    quote: "Their support team feels like an extension of ours.",
-    name: "Amit Gupta",
-    role: "Director, Healthcare Group",
-    image: "/images/amit.jpg",
-  },
-  {
-    quote:
-      "From banking CSPs to our website — one trusted partner for everything.",
-    name: "Sunita Rao",
-    role: "Business Owner",
-    image: "/images/sunita.jpg",
-  },
-];
+import type { PublicWordsContent } from "@/lib/cms/home";
 
+/** All text and photos come from the database (Admin → Homepage → "Public Words"). */
 export default function PublicWords({
-  heading,
-  description,
-}: { heading?: string; description?: string } = {}) {
-  const track = [...words, ...words];
+  content,
+}: {
+  content: PublicWordsContent;
+}) {
+  const { heading, description } = content;
+  const words = (content.items ?? []).filter((w) => w.visible !== false);
+  if (words.length === 0) return null;
+  // The marquee scrolls exactly half the track, so the track must be two identical halves; a short list is repeated inside each half.
+  const half = Array.from(
+    { length: Math.ceil(4 / words.length) },
+    () => words,
+  ).flat();
+  const track = [...half, ...half];
   return (
     <section className="relative py-16 md:py-20 bg-[#062E49] overflow-hidden">
       <div className="max-w-[1300px] mx-auto px-4 md:px-8 text-center mb-10">
-        <h2
-          className="text-3xl md:text-4xl font-bold text-[#FFFFFF] "
-          style={{ fontFamily: "var(--font-poppins)" }}
-        >
-          {heading || "Public Words For This NIS"}
-        </h2>
+        {heading && (
+          <h2
+            className="text-3xl md:text-4xl font-bold text-[#FFFFFF] "
+            style={{ fontFamily: "var(--font-poppins)" }}
+          >
+            {heading}
+          </h2>
+        )}
         {description && <p className="text-gray-500 mt-2">{description}</p>}
       </div>
       <div className="bg-[#0e3550] p-xl-5">
@@ -72,11 +57,18 @@ export default function PublicWords({
 
               {/* Person */}
               <div className="flex items-center gap-3">
-                <img
-                  src={w.image}
-                  alt={w.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+                {w.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={w.image}
+                    alt={w.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-[#3884cb]/30 text-white text-sm font-bold flex items-center justify-center">
+                    {w.name.slice(0, 1)}
+                  </div>
+                )}
 
                 <div>
                   <p className="font-bold text-brand-navy text-sm">{w.name}</p>

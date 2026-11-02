@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { cn } from "@/lib/utils"; // Optional: if you're using clsx/twMerge utilities

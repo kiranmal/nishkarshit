@@ -1,9 +1,9 @@
 "use server";
 
 import { assertPermission } from "@/lib/auth";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type DirectoryBlogDoc } from "@/lib/models";
 
 function slugify(input: string) {
@@ -22,7 +22,7 @@ export async function addBlogAction(formData: FormData) {
     status: (String(formData.get("status") || "published") as "draft" | "published"),
     publishedAt: new Date(),
   });
-  revalidatePath("/admin/blogs");
+  revalidatePath("/admin/directory-blogs");
   revalidatePath("/directory/blogs");
 }
 
@@ -41,7 +41,7 @@ export async function updateBlogAction(id: string, formData: FormData) {
       },
     }
   );
-  revalidatePath("/admin/blogs");
+  revalidatePath("/admin/directory-blogs");
   revalidatePath("/directory/blogs");
 }
 
@@ -49,6 +49,6 @@ export async function deleteBlogAction(id: string) {
   await assertPermission("delete");
   const db = await getDb();
   await db.collection<DirectoryBlogDoc>(COLLECTIONS.directoryBlogs).deleteOne({ _id: new ObjectId(id) });
-  revalidatePath("/admin/blogs");
+  revalidatePath("/admin/directory-blogs");
   revalidatePath("/directory/blogs");
 }

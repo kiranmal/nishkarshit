@@ -3,10 +3,11 @@ import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
 import ServicesDetailed from "@/components/ServicesDetailed";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type ServiceSectionDoc } from "@/lib/models";
 import { servicesDetailed, type ServiceBlock } from "@/data/servicesDetailed";
 import { getPageMetadata } from "@/lib/seo";
+import { neverImported } from "@/lib/cms/store";
 
 export const dynamic = "force-dynamic";
 
@@ -27,8 +28,10 @@ async function getSections(): Promise<ServiceBlock[]> {
       .find({ status: "published" })
       .sort({ order: 1 })
       .toArray();
-    if (docs.length === 0) return servicesDetailed;
-    const slugOf = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    if (docs.length === 0)
+      return (await neverImported("services")) ? servicesDetailed : [];
+    const slugOf = (label: string) =>
+      label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     return docs.map((d) => ({
       label: d.label,
       heading: d.heading,
@@ -37,7 +40,11 @@ async function getSections(): Promise<ServiceBlock[]> {
       ctaHref: d.ctaHref,
       imageSide: d.imageSide,
       // keep the original icon for default sections; new ones get a generic icon until they have a photo
-      icon: servicesDetailed.find((x) => slugOf(x.label) === d.slug || slugOf(x.label) === slugOf(d.label))?.icon ?? ("code" as const),
+      icon:
+        servicesDetailed.find(
+          (x) =>
+            slugOf(x.label) === d.slug || slugOf(x.label) === slugOf(d.label),
+        )?.icon ?? ("code" as const),
       accent: d.accent,
       imageUrl: d.imageUrl || undefined,
     }));

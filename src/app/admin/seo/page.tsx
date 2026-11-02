@@ -1,7 +1,7 @@
 import AdminShell from "@/components/admin/AdminShell";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import { requirePermission } from "@/lib/auth";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type SeoMetaDoc } from "@/lib/models";
 import { deleteSeoAction, upsertSeoAction } from "@/app/admin/seo/actions";
 import { SEO_PAGES } from "@/lib/seo-pages";
@@ -26,7 +26,7 @@ export default async function AdminSeoPage() {
         built-in default, then to the global defaults in <Link href="/admin/settings" className="text-blue-600">Site Settings</Link>.
         Expertise pages also have their own SEO panel inside <Link href="/admin/expertise" className="text-blue-600">Expertise</Link>.
       </p>
-      {!isDbConfigured() && <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">MongoDB isn&apos;t connected — SEO can&apos;t be saved.</div>}
+      {!isDbConfigured() && <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">The database isn&apos;t connected — SEO can&apos;t be saved.</div>}
 
       {groups.map((g) => (
         <div key={g} className="mt-6">

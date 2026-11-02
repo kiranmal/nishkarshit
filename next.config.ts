@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/directory", destination: DIRECTORY_URL, permanent: false },
       { source: "/directory/:path*", destination: DIRECTORY_URL, permanent: false },
+      // Alias: the Terms page lives at /terms-conditions (existing URL, kept); this is the long form people also use.
+      { source: "/terms-and-conditions", destination: "/terms-conditions", permanent: true },
     ];
   },
   images: {

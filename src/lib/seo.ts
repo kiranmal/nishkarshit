@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { cache } from "react";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type SeoMetaDoc } from "@/lib/models";
 import { getSeoDefault } from "@/lib/seo-pages";
 import { getSettings } from "@/lib/cms/content";
+import type { EntitySeo } from "@/lib/cms/seo-fields";
 
 
 const SITE_NAME = "Nishkarsh IT Solution";
@@ -52,6 +53,29 @@ export async function getPageMetadata(
 }
 
 
+/** Entity-level SEO (blog post, hardware product, CMS page…) overrides the route-level /admin/seo record, field by field. */
+function mergeEntitySeo(doc: SeoMetaDoc | null, e?: EntitySeo): SeoMetaDoc | null {
+  if (!e) return doc;
+  const has = Object.values(e).some((v) => (typeof v === "string" ? v.trim() : v));
+  if (!has) return doc;
+  const pick = (a: string | undefined, b: string | undefined) => (a && a.trim() ? a : b);
+  return {
+    ...(doc ?? ({} as SeoMetaDoc)),
+    title: pick(e.metaTitle, doc?.title) as string,
+    description: pick(e.metaDescription, doc?.description) as string,
+    keywords: pick(e.metaKeywords, doc?.keywords) as string,
+    canonicalUrl: pick(e.canonicalUrl, doc?.canonicalUrl),
+    ogTitle: pick(e.ogTitle, doc?.ogTitle),
+    ogDescription: pick(e.ogDescription, doc?.ogDescription),
+    ogImage: pick(e.ogImage, doc?.ogImage),
+    twitterTitle: pick(e.twitterTitle, doc?.twitterTitle),
+    twitterDescription: pick(e.twitterDescription, doc?.twitterDescription),
+    twitterImage: pick(e.twitterImage, doc?.twitterImage),
+    noIndex: Boolean(e.noIndex || doc?.noIndex),
+    noFollow: Boolean(e.noFollow || doc?.noFollow),
+  } as SeoMetaDoc;
+}
+
 /**
  * Metadata for a public page. Priority: admin-saved page SEO (/admin/seo) →
  * the caller's `fallback` → the built-in route default → global Site Settings.
@@ -59,9 +83,11 @@ export async function getPageMetadata(
  */
 export async function buildMetadata(
   slug: string,
-  fallback?: { title?: string; description?: string; keywords?: string; image?: string }
+  fallback?: { title?: string; description?: string; keywords?: string; image?: string },
+  entity?: EntitySeo
 ): Promise<Metadata> {
-  const [doc, settings] = await Promise.all([getSeoDoc(slug), getSettings()]);
+  const [seoDoc, settings] = await Promise.all([getSeoDoc(slug), getSettings()]);
+  const doc = mergeEntitySeo(seoDoc, entity);
   const def = getSeoDefault(slug);
 
   const title = doc?.title?.trim() || fallback?.title || def?.title || settings.defaultTitle;

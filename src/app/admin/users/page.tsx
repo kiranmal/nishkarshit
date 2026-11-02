@@ -1,6 +1,6 @@
 import AdminShell from "@/components/admin/AdminShell";
 import { requirePermission, ROLES } from "@/lib/auth";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type AdminUserDoc } from "@/lib/models";
 import CreateUserForm from "./CreateUserForm";
 import { changeRoleAction, deleteUserAction, resetPasswordAction } from "./actions";

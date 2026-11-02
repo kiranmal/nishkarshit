@@ -1,11 +1,11 @@
 "use server";
 
 import { assertPermission } from "@/lib/auth";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { COLLECTIONS, type ServiceSectionDoc } from "@/lib/models";
-import { servicesDetailed } from "@/data/servicesDetailed";
+import { seedServices } from "@/lib/cms/seed";
 import { safeImage, safeUrl } from "@/lib/cms/schema";
 import { externalizeImages } from "@/lib/cms/persist-images";
 
@@ -32,7 +32,7 @@ export async function updateServiceSectionAction(id: string, formData: FormData)
   await assertPermission("content");
   const db = await getDb();
   const { imageUrl, ...data } = await readSectionFromForm(formData);
-  // An emptied image field must REMOVE the image ($set with undefined is ignored by MongoDB).
+  // An emptied image field must REMOVE the image ($set with undefined is ignored by the database).
   await db.collection<ServiceSectionDoc>(COLLECTIONS.serviceSections).updateOne(
     { _id: new ObjectId(id) },
     imageUrl
@@ -66,39 +66,10 @@ export async function deleteServiceSectionAction(id: string) {
   revalidatePath("/services");
 }
 
-/** Safe to run anytime — upserts by slug with $setOnInsert, so it only fills
- *  in sections that don't exist yet and never touches admin-edited ones. */
+/** Safe to run anytime — only fills in sections that don't exist yet and never touches admin-edited ones. */
 export async function seedServiceSectionsAction(): Promise<void> {
   await assertPermission("content");
-  const db = await getDb();
-  const collection = db.collection<ServiceSectionDoc>(COLLECTIONS.serviceSections);
-
-  const ops = servicesDetailed.map((s, i) => {
-    const slug = s.label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    return {
-      updateOne: {
-        filter: { slug },
-        update: {
-          $setOnInsert: {
-            slug,
-            order: i,
-            label: s.label,
-            heading: s.heading,
-            paragraph: s.paragraph,
-            ctaLabel: s.ctaLabel,
-            ctaHref: s.ctaHref,
-            imageSide: s.imageSide,
-            accent: s.accent,
-            status: "published" as const,
-            updatedAt: new Date(),
-          },
-        },
-        upsert: true,
-      },
-    };
-  });
-  if (ops.length > 0) await collection.bulkWrite(ops);
-
+  await seedServices(await getDb());
   revalidatePath("/admin/services");
   revalidatePath("/services");
 }

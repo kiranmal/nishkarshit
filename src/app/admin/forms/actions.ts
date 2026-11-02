@@ -1,9 +1,9 @@
 "use server";
 
-import { ObjectId } from "mongodb";
+import { ObjectId } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDb } from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
 import { LEAD_STATUSES, type LeadStatus } from "@/lib/models";
 import { assertPermission } from "@/lib/auth";
 import { getSource } from "@/lib/forms/registry";

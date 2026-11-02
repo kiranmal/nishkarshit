@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import { requirePermission, can } from "@/lib/auth";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/models";
 import { TEAM_SECTIONS } from "@/lib/cms/entities";
 import { DEFAULT_MEMBERS } from "@/data/teamFallback";

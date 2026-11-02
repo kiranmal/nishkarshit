@@ -1,18 +1,20 @@
+"use client";
+
 import React from "react";
 
-import { workExperience } from "@/data/it-services/";
+import { workExperience as defaults } from "@/data/it-services/";
+import type { ITServicesContent } from "@/lib/cms/it-services";
 import { Button } from "./ui/MovingBorders";
 
-const Experience = () => {
+const Experience = ({ content }: { content: ITServicesContent["experience"] }) => {
+  const workExperience = content.cards.map((c, i) => ({ ...(defaults[i] ?? { className: "md:col-span-2" }), id: i + 1, title: c.title, desc: c.desc, thumbnail: c.thumbnail }));
   return (
     <div className="py-20 w-full">
       <h1 className="heading">
-        Our <span className="text-purple">Tech Stack</span>
+        {content.heading}{" "}<span className="text-purple">{content.accent}</span>
       </h1>
       <p className="text-center text-muted-foreground max-w-2xl mx-auto mt-4">
-        We Are Pioneers In Web, Mobile App, And Software Services. Our
-        Experienced And Highly Skilled Professionals Are Always Ready To Tackle
-        Challenges And Fulfill Customer Requirements
+        {content.intro}
       </p>
 
       <div className="w-full mt-12 grid lg:grid-cols-4 grid-cols-1 gap-10">

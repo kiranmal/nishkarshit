@@ -3,7 +3,7 @@ import ContentEditor from "@/components/admin/ContentEditor";
 import { requirePermission } from "@/lib/auth";
 import { CMS_MODULES } from "@/lib/cms/modules";
 import { getStoredContent } from "@/lib/cms/content";
-import { isDbConfigured } from "@/lib/mongodb";
+import { isDbConfigured } from "@/lib/db";
 import { saveContentAction, resetContentAction } from "@/app/admin/content-actions";
 
 /** Shared page body for every schema-driven content module (/admin/header, /admin/footer, …). */
@@ -17,7 +17,7 @@ export default async function ContentEditorPage({ moduleKey, active }: { moduleK
       <p className="text-gray-500 mb-6 text-sm max-w-2xl">{mod.description}</p>
       {!isDbConfigured() && (
         <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-4 py-3">
-          MongoDB isn&apos;t connected — you can view the defaults but saving is disabled until <code>MONGODB_URI</code> is set.
+          the database isn&apos;t connected — you can view the defaults but saving is disabled until <code>DATABASE_URL</code> is set.
         </div>
       )}
       <ContentEditor saveAction={saveContentAction.bind(null, moduleKey)} resetAction={resetContentAction.bind(null, moduleKey)} fields={mod.fields} initial={stored!.data} customised={stored!.customised} publicPath={mod.publicPath} />

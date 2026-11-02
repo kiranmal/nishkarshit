@@ -2,7 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type AdminUserDoc } from "@/lib/models";
 import { setSessionCookie, clearSessionCookie, type Role } from "@/lib/auth";
 
@@ -24,7 +24,7 @@ export async function loginAction(
   if (!isDbConfigured()) {
     return {
       error:
-        "MONGODB_URI is not configured yet. Add it to .env.local, run the seed script, then try again.",
+        "DATABASE_URL is not configured yet. Add it to .env.local, run the seed script, then try again.",
     };
   }
 

@@ -4,28 +4,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-const tiles = [
-  {
-    image: "https://nishkarshit.com/assets/Software-B9q3P1k-.jpg",
-  },
-  {
-    image: "https://nishkarshit.com/assets/business-ZsSXwq_Y.jpg",
-  },
-  {
-    image: "https://nishkarshit.com/assets/infra-CZsnXnNs.jpg",
-  },
-  {
-    image: "https://nishkarshit.com/assets/loans-YGZ8EeNz.jpg",
-  },
-  {
-    image: "https://nishkarshit.com/assets/manpower-KZfVqRy-.jpg",
-  },
-  {
-    image: "https://nishkarshit.com/assets/Software-B9q3P1k-.jpg",
-  },
-];
+import { optimizeImage } from "@/lib/img";
+import type { GalleryContent } from "@/lib/cms/home";
 
-export default function Gallery() {
+export default function Gallery({ content }: { content: GalleryContent }) {
+  const tiles = content.items.filter((t) => t.visible !== false && t.image);
   return (
     <section className="py-16 md:py-20 bg-[#062E49]">
       {/* Heading */}
@@ -34,7 +17,7 @@ export default function Gallery() {
           className="text-3xl md:text-6xl font-bold text-[#c8bfbf]"
           style={{ fontFamily: "var(--font-poppins)" }}
         >
-          Our Gallery
+          {content.heading}
         </h2>
       </div>
 
@@ -45,7 +28,7 @@ export default function Gallery() {
           className="w-full"
           spaceBetween={20}
           slidesPerView={1}
-          loop={true}
+          loop={tiles.length > 4}
           speed={800}
           autoplay={{
             delay: 2000,
@@ -67,9 +50,17 @@ export default function Gallery() {
             <SwiperSlide key={index}>
               <div className="w-full aspect-square overflow-hidden rounded-xl">
                 <img
-                  src={tile.image}
-                  alt={`Gallery ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  loading={index < 4 ? "eager" : "lazy"}
+                  decoding="async"
+                  src={optimizeImage(tile.image)}
+                  alt={tile.alt || tile.title || `Gallery ${index + 1}`}
+                  title={tile.title || undefined}
+                  className="block w-full h-full object-cover"
+                  style={{
+                    opacity: 1,
+                    filter: "none",
+                    imageRendering: "auto",
+                  }}
                 />
               </div>
             </SwiperSlide>

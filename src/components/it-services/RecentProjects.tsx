@@ -2,15 +2,16 @@
 
 import { FaLocationArrow } from "react-icons/fa6";
 
-import { projects } from "@/data/it-services/";
+import type { ITServicesContent } from "@/lib/cms/it-services";
 import { PinContainer } from "./ui/Pin";
 
-const RecentProjects = () => {
+const RecentProjects = ({ content }: { content: ITServicesContent["projects"] }) => {
+  const projects = content.items.map((p, i) => ({ id: i + 1, title: p.title, des: p.des, img: p.img, link: p.link, iconLists: p.icons.map((x) => x.image) }));
   return (
     <div className="py-20">
       <h1 className="heading">
-        A small selection of{" "}
-        <span className="text-purple">recent projects</span>
+        {content.heading}{" "}
+        <span className="text-purple">{content.accent}</span>
       </h1>
       <div className="flex flex-wrap items-center justify-center p-4 gap-16 mt-10">
         {projects.map((item) => (

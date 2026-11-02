@@ -6,9 +6,10 @@ import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
 import JobApplyForm from "@/components/careers/JobApplyForm";
 import { MapPin, Briefcase } from "lucide-react";
-import { getDb, isDbConfigured } from "@/lib/mongodb";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { COLLECTIONS, type JobPostingDoc } from "@/lib/models";
 import { jobPostingsFallback } from "@/data/pagesFallback";
+import { neverImported } from "@/lib/cms/store";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,12 @@ async function getJobs() {
     const docs = await db
       .collection<JobPostingDoc>(COLLECTIONS.jobPostings)
       .find({ status: "published" })
+      .sort({ postedAt: -1 })
       .toArray();
-    return docs.length > 0 ? docs : jobPostingsFallback;
+    // The database is the source of truth. Built-in jobs are shown only before the first import (fresh install).
+    if (docs.length === 0 && (await neverImported("careers")))
+      return jobPostingsFallback;
+    return docs;
   } catch {
     return jobPostingsFallback;
   }
@@ -55,6 +60,11 @@ export default async function CareersPage() {
             backgroundPosition: "center",
           }}
         >
+          {jobs.length === 0 && (
+            <p className="w-full max-w-3xl rounded-3xl bg-white/80 p-8 text-center text-gray-700">
+              There are no open positions right now. Please check back soon.
+            </p>
+          )}
           {jobs.map((j) => (
             <div
               key={j.title}
